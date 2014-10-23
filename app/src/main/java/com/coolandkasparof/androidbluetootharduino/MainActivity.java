@@ -6,13 +6,17 @@ package com.coolandkasparof.androidbluetootharduino;
         import android.bluetooth.BluetoothDevice;
         import android.content.BroadcastReceiver;
         import android.content.Context;
+
+        import java.util.Iterator;
         import java.util.Set;
         import android.content.Intent;
         import android.content.IntentFilter;
         import android.view.View;
         import android.view.View.OnClickListener;
+        import android.widget.AdapterView;
         import android.widget.ArrayAdapter;
         import android.widget.Button;
+        import android.widget.ExpandableListView;
         import android.widget.ListView;
         import android.widget.TextView;
         import android.widget.Toast;
@@ -29,6 +33,7 @@ public class MainActivity extends Activity {
     private Set<BluetoothDevice> pairedDevices;
     private ListView myListView;
     private ArrayAdapter<String> BTArrayAdapter;
+    private AdapterView.OnItemClickListener  listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +98,30 @@ public class MainActivity extends Activity {
             // create the arrayAdapter that contains the BTDevices, and set it to the ListView
             BTArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
             myListView.setAdapter(BTArrayAdapter);
+            listener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Thread ConnectThread = new Thread();
+                //ConnectThread.start();
+                String deviceName = "";
+                BluetoothDevice toBeConnected;
+                String tmpName;
+                for(BluetoothDevice device : pairedDevices)
+                {
+                    tmpName = device.getName()+"\n"+device.getAddress();
+                    if (tmpName.equals(myListView.getItemAtPosition(position).toString()))
+                    {
+                        deviceName=myListView.getItemAtPosition(position).toString();
+                        toBeConnected = device;
+                    }
+                }
+                Toast.makeText(getApplicationContext(),"Device : "+
+                        deviceName+" clicked!",
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        };
+
         }
     }
 
@@ -132,7 +161,7 @@ public class MainActivity extends Activity {
 
         Toast.makeText(getApplicationContext(),"Show Paired Devices",
                 Toast.LENGTH_SHORT).show();
-
+        myListView.setOnItemClickListener(listener);
     }
 
     final BroadcastReceiver bReceiver = new BroadcastReceiver() {
@@ -160,6 +189,7 @@ public class MainActivity extends Activity {
 
             registerReceiver(bReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         }
+        myListView.setOnItemClickListener(listener);
     }
 
     public void off(View view){
@@ -176,5 +206,6 @@ public class MainActivity extends Activity {
         super.onDestroy();
         unregisterReceiver(bReceiver);
     }
+
 
 }
