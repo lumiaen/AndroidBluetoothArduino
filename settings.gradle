@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':bluetoothSPP'
+project(':bluetoothSPP').projectDir = new File('app/src/bluetoothSPP')

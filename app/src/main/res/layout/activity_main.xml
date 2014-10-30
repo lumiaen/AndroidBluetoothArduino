@@ -18,13 +18,13 @@
         android:layout_marginTop="30dp" >
 
         <Button
-            android:id="@+id/turnOn"
+            android:id="@+id/Temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/on" />
 
         <Button
-            android:id="@+id/turnOff"
+            android:id="@+id/Humid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/off" />
@@ -39,23 +39,10 @@
         android:layout_marginTop="80dp" >
 
         <Button
-            android:id="@+id/paired"
+            android:id="@+id/btnConnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/List" />
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Find" />
-
-        <ListView
-            android:id="@+id/listView1"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp" >
-
-        </ListView>
 
     </LinearLayout>
 

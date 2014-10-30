@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BluetoothTest</string>
+    <string name="app_name">Android BlueTooth Arduino</string>
     <string name="action_settings">Settings</string>
     <string name="Text">Status: -</string>
-    <string name="on">Turn On</string>
-    <string name="off">Turn Off</string>
-    <string name="List">List paired Devices</string>
-    <string name="Find">Search new Devices / Cancel</string>
+    <string name="on">Temp</string>
+    <string name="off">Humid</string>
+    <string name="List">Connect</string>
 
 </resources>
