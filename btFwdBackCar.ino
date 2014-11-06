@@ -3,21 +3,36 @@
 #define FWD_BCK 4
 #define LFT_RGHT 3
 
-#define StopMotor 0
+#define StraightMotor 0
 #define FwdMotor 1
 #define BackMotor 2
 #define LeftMotor 3
 #define RightMotor 4
 
-char INBYTE;
 int  LED = 13; // LED on pin 13
+int byteCount = 0;
+int digitCount = 0;
+char newByte;
 
 // --------------------------------------------------------------------------- Motors
 int motor1 = 23;
 int motor2 = 22;
 int motorLeft = 24;
 int motorRight = 25;
-
+String myString = "";
+int mov =0;
+int INC=0;
+int cnt = 0;
+struct
+{
+  int inc;
+  boolean ret;
+} chkValRet;
+struct
+{
+  int  mov;
+  int  val;
+} movement;
 // --------------------------------------------------------------------------- Setup
 void setup() {
   Serial2.begin(9600); 
@@ -39,155 +54,199 @@ digitalWrite(motorRight,LOW);
 }
 void loop() 
 {
-//  delay(2000);
-//  digitalWrite(LED,HIGH);
-//  digitalWrite( motor1,HIGH);
-//  digitalWrite( motor2,LOW);
-//  for (int fwdInt = 70; fwdInt<200 ;fwdInt++)
-//  {
-//      analogWrite(FWD_BCK,fwdInt);
-//      delay(15);
-//  }
-//  digitalWrite(LFT_RGHT,HIGH);
-//  digitalWrite(motorLeft,HIGH);
-//  digitalWrite(LED,LOW);
-//  delay(1000);
-//  digitalWrite(LED,HIGH);
-//  digitalWrite(motorLeft,LOW);
-//  delay(1000);
-//  
-//  digitalWrite(motorRight,HIGH);
-//  for (int fwdInt = 200;fwdInt >70;fwdInt--)
-//  {
-//      analogWrite(FWD_BCK,fwdInt);
-//      delay(15);
-//  }
-//  digitalWrite(LED,LOW);
-//  digitalWrite(motorRight,LOW);  
-//  digitalWrite(LFT_RGHT,LOW);
-//  digitalWrite( motor1,LOW);
-//  delay(1000);
-//  digitalWrite(LED,HIGH);
-//  digitalWrite( motor2,HIGH);
-// for (int fwdInt = 70; fwdInt<200 ;fwdInt++)
-//  {
-//      analogWrite(FWD_BCK,fwdInt);
-//      delay(15);
-//  }
-//  digitalWrite(LED,LOW);
-//delay(1000);
-//digitalWrite(LED,HIGH);
-//  for (int fwdInt = 200;fwdInt >70;fwdInt--)
-//  {
-//      analogWrite(FWD_BCK,fwdInt);
-//      delay(15);
-//  }
-//    digitalWrite( motor2,LOW);
-//    digitalWrite(LED,LOW);
-//delay(2000);
-//Serial2.println("Press 1 to turn Arduino pin 13 LED ON or 0 to turn it OFF:");
-  Serial.println("wait");
+  Serial.flush();
+  Serial2.flush();
   while (!Serial2.available());   // stay here so long as COM port is empty   
-    Serial.println("done");
-  INBYTE = Serial2.read();        // read next available byte
-   
-    
-  if( INBYTE == '0' ) 
+   if (getCommand())
   {
-    Serial.println("0");
-    digitalWrite(LED,HIGH);
-    delay(1000);
-    digitalWrite(LED,LOW);
-    motor_move(StopMotor);
-  
-  }  
-   
-  if( INBYTE == '1' )
- {
-    Serial.println("1");
-   digitalWrite(LED,HIGH);
-    delay(1000);
-    digitalWrite(LED,LOW);
-  delay(1000);
-    digitalWrite(LED,HIGH);
-    delay(1000);
-    digitalWrite(LED,LOW);
-
-   motor_move(BackMotor);
-
- }  
-if (INBYTE =='2' ) 
-{
-      Serial.println("2");
-    digitalWrite(LED,HIGH);
-    delay(1000);
-    digitalWrite(LED,LOW);
-  delay(1000);
-    digitalWrite(LED,HIGH);
-    delay(1000);
-    digitalWrite(LED,LOW);
-  motor_move(FwdMotor); 
+    Serial.print("[");
+    Serial.print(movement.mov);
+    Serial.print(",");
+    Serial.print(movement.val);
+    Serial.println("]");
+    motor_move(movement.mov);
 }
-  delay(50);
+
+}
+
+boolean getCommand ()
+{
+     
+    // handle serial data begin
+    if (Serial2.available() > 0)
+    {
+      // read the incoming byte:
+      newByte = Serial2.read();
+      switch (INC)
+      {
+        case 0:
+            if (newByte == '*')
+            {
+              INC = 1;
+            }
+            break;
+            return false;
+        case 1:
+            switch (newByte)
+            {
+              case 'f':
+                  movement.mov = FwdMotor;
+                  INC=2;
+                  break;
+              case 'b':
+                  movement.mov = BackMotor;
+                  INC=2;
+                  break;
+              case 'l':
+                  movement.mov = LeftMotor;
+                  movement.val=1;
+                  INC=0;
+                  return true;
+                  break;
+              case 'r':
+                  movement.mov = RightMotor;
+                  movement.val=1;
+                  INC=0;
+                  return true;
+                  break;
+              case 's':
+                  movement.mov = StraightMotor;
+                  movement.val=1;
+                  INC=0;
+                  return true;
+                  break;
+              default:
+                  INC = 0;
+            }
+            break;
+            return false;
+        case 2:
+            getVal();
+            INC = chkValRet.inc;
+            return chkValRet.ret;
+            break;
+        default:
+            INC=0;
+            break;
+      }
+      return false;
+}
+}
+
+void getVal()
+{
+  int curVal=0;
+  if (isDigit(newByte))
+  {
+    if (cnt<3)
+    {
+      myString += String(newByte);
+      curVal = myString.toInt();
+      if (curVal >255)
+      {
+        cnt=0;
+        chkValRet.inc=0;
+        chkValRet.ret=false;
+        movement.val = 0;
+        movement.mov = 9999;
+        myString = "";
+      }
+      else
+      {
+        cnt++;
+        chkValRet.inc=2;
+        chkValRet.ret=false;
+      }
+    }
+    if (cnt==3)
+    {
+      curVal = myString.toInt();
+      if (curVal >255)
+      {
+        cnt=0;
+        chkValRet.inc=0;
+        chkValRet.ret=false;
+        movement.val = 0;
+        movement.mov = 9999;
+        myString = "";
+      }
+       else
+      {
+        cnt=0;
+        chkValRet.inc=0;
+        chkValRet.ret=true;
+        movement.val = myString.toInt();
+        myString = "";
+      }
+    }
+    else if (cnt > 3)
+    {
+      cnt=0;
+      chkValRet.inc=0;
+      chkValRet.ret=false;
+      movement.val = 9999;
+      myString = "";
+    }
+  }
+  else if (newByte == '*'&& cnt!=0)
+  {
+        cnt=0;
+        chkValRet.inc=0;
+        chkValRet.ret=true;
+        movement.val = myString.toInt();
+        myString = "";
+  }
+  else
+  {
+      chkValRet.inc=0;
+      chkValRet.ret=true;
+      myString="";
+      movement.mov=9999;
+      movement.val=0;
+  }
 }
 
 void motor_move(int dir)
 {
   switch (dir)
   {
-    case StopMotor:
-//            Serial.println("Stop");
-      digitalWrite(FWD_BCK,LOW);
-//      analogWrite(FWD_BCK,0);
-      digitalWrite( motor1,LOW);
-      digitalWrite( motor2,LOW);
+    case StraightMotor:
+      Serial.println("Straight");
+      digitalWrite(LFT_RGHT,LOW);
+      digitalWrite( motorLeft,LOW);
+      digitalWrite( motorRight,LOW);
+      break;
+    case LeftMotor:
+      Serial.println("Left");
+      digitalWrite(LFT_RGHT,HIGH);
+      digitalWrite( motorLeft,HIGH);
+      digitalWrite( motorRight,LOW);
+      break;
+    case RightMotor:
+      Serial.println("Right");
+      digitalWrite(LFT_RGHT,HIGH);
+      digitalWrite( motorLeft,LOW);
+      digitalWrite( motorRight,HIGH);
       break;
     case FwdMotor:
-//    Serial.println("Forward");
+     Serial.println("Forward");
      digitalWrite( motor1,HIGH);
      digitalWrite( motor2,LOW);
-      for (int y=0;y<255;y++)
-      {
-        analogWrite(LED,y);
-        analogWrite(FWD_BCK,y);
-        delay(10);
-      }
-      delay(500);
-      for (int y=255;y>0;y--)
-      {
-        analogWrite(LED,y);
-        analogWrite(FWD_BCK,y);
-        delay(10);
-      }
-      analogWrite(FWD_BCK,0);
-      digitalWrite( motor1,LOW);
-      digitalWrite( motor2,LOW);
-      break;
+     analogWrite(FWD_BCK,movement.val);
+     break;
     case BackMotor:
-//        Serial.println("Backwards");
+      Serial.println("Back");
       digitalWrite( motor1,LOW);
       digitalWrite( motor2,HIGH);
-      for (int y=0;y<255;y++)
-      {
-        analogWrite(LED,y);
-        analogWrite(FWD_BCK,y);
-        delay(10);
-      }
-      delay(500);
-      for (int y=255;y>0;y--)
-      {
-        analogWrite(LED,y);
-        analogWrite(FWD_BCK,y);
-        delay(10);
-      }
-      analogWrite(FWD_BCK,0);
-      digitalWrite( motor1,LOW);
-      digitalWrite( motor2,LOW);
+      analogWrite(FWD_BCK,movement.val);
       break;
    default:
-      analogWrite(FWD_BCK,0);
+      analogWrite(FWD_BCK,LOW);
       digitalWrite( motor1,LOW);
       digitalWrite( motor2,LOW);
+      digitalWrite(LFT_RGHT,LOW);
+      digitalWrite( motorLeft,LOW);
+      digitalWrite( motorRight,LOW);
       break;
   }      
 }
