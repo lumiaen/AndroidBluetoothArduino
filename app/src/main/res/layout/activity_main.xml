@@ -15,19 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="30dp" >
-
-        <Button
-            android:id="@+id/Temp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/on" />
-
-        <Button
-            android:id="@+id/Humid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/off" />
+        android:layout_below="@+id/text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout">
 
     </LinearLayout>
 
@@ -36,14 +27,87 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="80dp" >
-
-        <Button
-            android:id="@+id/btnConnect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/List" />
+        android:layout_marginTop="80dp"
+        android:id="@+id/linearLayout3">
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Forward"
+        android:layout_above="@+id/back"
+        android:layout_alignRight="@+id/back"
+        android:layout_alignEnd="@+id/back" />
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Back"
+        android:layout_toEndOf="@+id/Temp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/List"
+        android:layout_below="@+id/text"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Low"
+        android:id="@+id/low"
+        android:layout_toEndOf="@+id/Temp"
+        android:checked="true"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignRight="@+id/text"
+        android:layout_alignEnd="@+id/text" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Medium"
+        android:id="@+id/medium"
+        android:layout_toEndOf="@+id/low"
+        android:checked="false"
+        android:layout_alignTop="@+id/linearLayout3"
+        android:layout_toRightOf="@+id/low" />
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/High"
+        android:id="@+id/high"
+        android:layout_toEndOf="@+id/medium"
+        android:checked="false"
+        android:layout_alignTop="@+id/linearLayout3"
+        android:layout_toRightOf="@+id/medium" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Left"
+        android:id="@+id/left"
+        android:layout_above="@+id/back"
+        android:layout_toLeftOf="@+id/btnConnect"
+        android:layout_toStartOf="@+id/btnConnect" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Right"
+        android:id="@+id/right"
+        android:layout_toEndOf="@+id/high"
+        android:layout_alignTop="@+id/left"
+        android:layout_alignLeft="@+id/btnConnect"
+        android:layout_alignStart="@+id/btnConnect" />
+
 
 </RelativeLayout>
