@@ -36,7 +36,7 @@ struct
 // --------------------------------------------------------------------------- Setup
 void setup() {
   Serial2.begin(9600); 
-    Serial.begin(9600); 
+//    bnnbbegin(9600); 
   pinMode(LED, OUTPUT);
 pinMode(FWD_BCK,OUTPUT);
 pinMode(LFT_RGHT,OUTPUT);
@@ -54,17 +54,18 @@ digitalWrite(motorRight,LOW);
 }
 void loop() 
 {
-  Serial.flush();
+//  Serial.flush();
   Serial2.flush();
   while (!Serial2.available());   // stay here so long as COM port is empty   
    if (getCommand())
   {
-    Serial.print("[");
-    Serial.print(movement.mov);
-    Serial.print(",");
-    Serial.print(movement.val);
-    Serial.println("]");
+//    Serial.print("[");
+//    Serial.print(movement.mov);
+//    Serial.print(",");
+//    Serial.print(movement.val);
+//    Serial.println("]");
     motor_move(movement.mov);
+    delay(20);
 }
 
 }
@@ -77,6 +78,7 @@ boolean getCommand ()
     {
       // read the incoming byte:
       newByte = Serial2.read();
+//      Serial.println("incoming : " + String(newByte));
       switch (INC)
       {
         case 0:
@@ -211,31 +213,31 @@ void motor_move(int dir)
   switch (dir)
   {
     case StraightMotor:
-      Serial.println("Straight");
+//      Serial.println("Straight");
       digitalWrite(LFT_RGHT,LOW);
       digitalWrite( motorLeft,LOW);
       digitalWrite( motorRight,LOW);
       break;
     case LeftMotor:
-      Serial.println("Left");
+//      Serial.println("Left");
       digitalWrite(LFT_RGHT,HIGH);
       digitalWrite( motorLeft,HIGH);
       digitalWrite( motorRight,LOW);
       break;
     case RightMotor:
-      Serial.println("Right");
+//      Serial.println("Right");
       digitalWrite(LFT_RGHT,HIGH);
       digitalWrite( motorLeft,LOW);
       digitalWrite( motorRight,HIGH);
       break;
     case FwdMotor:
-     Serial.println("Forward");
+//     Serial.println("Forward");
      digitalWrite( motor1,HIGH);
      digitalWrite( motor2,LOW);
      analogWrite(FWD_BCK,movement.val);
      break;
     case BackMotor:
-      Serial.println("Back");
+//      Serial.println("Back");
       digitalWrite( motor1,LOW);
       digitalWrite( motor2,HIGH);
       analogWrite(FWD_BCK,movement.val);
